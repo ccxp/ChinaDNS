@@ -1,3 +1,3 @@
 bin_PROGRAMS = chinadns
 
-chinadns_SOURCES = chinadns.c local_ns_parser.c local_ns_parser.h
+chinadns_SOURCES = chinadns.c local_ns_parser.c local_ns_parser.h gfw_util.c gfw_util.h iBase64.c iBase64.h
