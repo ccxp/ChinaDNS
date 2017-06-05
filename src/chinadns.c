@@ -347,6 +347,7 @@ static int resolve_dns_servers()
         {
             port = (char*) "53";
         }
+        printf("%s %s %d\n", global_buf, port, i);
         if ((r = getaddrinfo(global_buf, port, &hints, &addr_ip)))
         {
             VERR("%s:%s\n", gai_strerror(r), token);
@@ -486,11 +487,11 @@ static int test_ip_in_list(struct in_addr ip, const net_list_t *netlist)
     }
     if ((netlist->nets[l].net.s_addr ^ ip_net.net.s_addr) & (0xffffffff ^ netlist->nets[l].mask))
     {
-        if (verbose)
-            printf("%s match %s:%d\n", inet_ntoa(ip_net.net), inet_ntoa(netlist->nets[m].net), netlist->nets[m].mask);
-
         return 0;
     }
+    if (verbose)
+        printf("%s match %u:%u\n",  inet_ntoa(ip), netlist->nets[m].net, netlist->nets[m].mask);
+    
     return 1;
 }
 

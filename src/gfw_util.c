@@ -59,12 +59,10 @@ static int get_dot_pos(const char* line, int* p, int pLen)
 
 static void handleLine(char* line)
 {
-    //printf("%s\n", line);
-
     int type = 1, dotcnt, len = strlen(line);
     char* p;
     stGFWInfo* ptr;
-
+    
     if (0 == len)
         return;
     if (line[0] == '!' || line[0] == '[')
@@ -171,23 +169,22 @@ static void handleBase64Line(char* line)
     int pos1 = 0, pos2 = 0;
     int cnt = DecodeBase64(line, m_buf2 + m_buf2_pos, strlen(line));
     m_buf2_pos += cnt;
+    m_buf2[m_buf2_pos] = '\0';
 
     for (pos2 = 0; pos2 < m_buf2_pos; pos2++)
     {
-
         if (m_buf2[pos2] == '\n' || m_buf2[pos2] == '\r')
         {
             m_buf2[pos2] = '\0';
 
             handleLine(m_buf2 + pos1);
-
             pos1 = pos2 + 1;
         }
     }
-    if (pos1 < m_buf2_pos)
+    if (pos1 < m_buf2_pos && pos1 > 0)
     {
-        if (pos1 > 0)
-            memcpy(m_buf2, m_buf2 + pos1, m_buf2_pos - pos1);
+        for (pos2 = pos1; pos2 < m_buf2_pos; pos2++)
+            m_buf2[pos2-pos1] = m_buf2[pos2];
         m_buf2_pos = m_buf2_pos - pos1;
         m_buf2[m_buf2_pos] = '\0';
     }
@@ -259,7 +256,6 @@ static int cmp_gfw_info(const void *a, const void *b)
 
 int LoadGFWData(const char* conf)
 {
-
     FILE* fp = fopen(conf, "r");
     if (NULL == fp)
     {
