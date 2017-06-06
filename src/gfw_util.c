@@ -11,6 +11,7 @@ static int m_pos[16];
 
 static char* m_buf1 = NULL;
 static char* m_buf2 = NULL;
+static char* m_buf3 = NULL;
 static int m_buf2_pos = 0;
 static const int m_buf_size = 10240;
 
@@ -183,8 +184,14 @@ static void handleBase64Line(char* line)
     }
     if (pos1 < m_buf2_pos && pos1 > 0)
     {
-        for (pos2 = pos1; pos2 < m_buf2_pos; pos2++)
-            m_buf2[pos2-pos1] = m_buf2[pos2];
+    	if (pos1 > m_buf2_pos - pos1)
+    		memcpy(m_buf2, m_buf2 + pos1, m_buf2_pos - pos1);
+    	else
+    	{
+    		memcpy(m_buf3, m_buf2 + pos1, m_buf2_pos - pos1);
+    		memcpy(m_buf2, m_buf3, m_buf2_pos - pos1);
+    	}
+        
         m_buf2_pos = m_buf2_pos - pos1;
         m_buf2[m_buf2_pos] = '\0';
     }
@@ -265,6 +272,7 @@ int LoadGFWData(const char* conf)
 
     m_buf1 = (char*) malloc(m_buf_size);
     m_buf2 = (char*) malloc(m_buf_size);
+    m_buf3 = (char*) malloc(m_buf_size);
     ReadConfig(fp);
     fclose(fp);
 
@@ -276,6 +284,7 @@ int LoadGFWData(const char* conf)
 
     free(m_buf1);
     free(m_buf2);
+    free(m_buf3);
 
     qsort(gfw_info_list, gfw_info_count, sizeof(stGFWInfo), cmp_gfw_info);
 
