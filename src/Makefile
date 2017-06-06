@@ -9,4 +9,4 @@ chinadns : chinadns.o
 	$(CC) $(LDFLAGS) $(objects) -o chinadns -lresolv
 
 clean :
-	rm *.o chinadns 
+	rm *.o chinadns

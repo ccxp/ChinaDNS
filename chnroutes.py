@@ -16,7 +16,7 @@ def generate_linux(metric):
     upscript_header = """\
 #!/bin/sh
 
-ip rule del from 192.168.1.128/25
+ip rule del from 192.168.2.128/25
 
 OLDGW=$(ip route show | grep "pppoe-wan" | head -n1 | grep via | cut -d ' ' -f 3)
 VPNIP=$(ip route show | grep "hkvpn" | head -n1 | grep via | cut -d ' ' -f 3)
@@ -27,7 +27,7 @@ if [ "${VPNIP}" == '' ]; then
     exit 0
 fi
 
-ip rule add from 192.168.1.128/25 table 10
+ip rule add from 192.168.2.128/25 table 10
 ip route add default via $OLDGW table 10
 
 if [ ! -e /tmp/vpn_oldgw ]; then
@@ -40,7 +40,7 @@ ip -batch - <<EOF
 #!/bin/sh
 export PATH="/bin:/sbin:/usr/sbin:/usr/bin"
 OLDGW=$(cat /tmp/vpn_oldgw)
-ip rule del from 192.168.1.128/25
+ip rule del from 192.168.2.128/25
 ip -batch - <<EOF
 """
 
